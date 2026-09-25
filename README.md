@@ -17,68 +17,7 @@ The primary objective of this project is to perform an end-to-end, data-driven a
 
 ---
 
-## 2. Project Structure
-
-```text
-fraud_detection_analysis/
-│
-├── data/
-│   ├── raw/
-│   │   ├── train_transaction.csv
-│   │   └── train_identity.csv
-│   └── processed/
-│       ├── X_train.parquet
-│       ├── X_val.parquet
-│       ├── y_train.npy
-│       └── y_val.npy
-│
-├── notebooks/
-│   ├── 01_data_and_fraud_analysis.ipynb
-│   ├── 02_preprocessing_and_features.ipynb
-│   └── 03_modeling_and_evaluation.ipynb
-│
-├── src/
-│   ├── preprocessing.py
-│   └── modeling.py
-│
-├── outputs/
-│   ├── figures/
-│   │   ├── fraud_distribution.png
-│   │   ├── missing_value_analysis.png
-│   │   ├── transaction_amount_fraud.png
-│   │   ├── fraud_by_product.png
-│   │   ├── fraud_by_card_type.png
-│   │   ├── fraud_by_email_domain.png
-│   │   ├── fraud_by_time.png
-│   │   ├── confusion_matrix_logistic_regression.png
-│   │   ├── confusion_matrix_decision_tree.png
-│   │   ├── confusion_matrix_random_forest.png
-│   │   ├── confusion_matrix_histgradientboosting.png
-│   │   ├── roc_curves.png
-│   │   ├── precision_recall_curves.png
-│   │   ├── threshold_tradeoff.png
-│   │   └── feature_importance.png
-│   └── tables/
-│       ├── dataset_summary.csv
-│       ├── fraud_distribution.csv
-│       ├── missing_value_summary.csv
-│       ├── fraud_rate_product.csv
-│       ├── fraud_rate_card4.csv
-│       ├── fraud_rate_card6.csv
-│       ├── fraud_rate_identity.csv
-│       ├── fraud_rate_amt_bands.csv
-│       ├── feature_engineering_summary.csv
-│       ├── model_comparison.csv
-│       └── threshold_analysis.csv
-│
-├── README.md
-├── project_report.md
-└── requirements.txt
-```
-
----
-
-## 3. Analytical Methodology & Pipeline
+## 2. Analytical Methodology & Pipeline
 
 ```text
 Dataset Understanding 
@@ -102,7 +41,7 @@ Dataset Understanding
 
 ---
 
-## 4. Empirical Model Performance Comparison
+## 3. Empirical Model Performance Comparison
 
 Evaluated on the out-of-time validation dataset (**118,108 transactions; 4,064 actual frauds**):
 
@@ -123,7 +62,7 @@ Evaluated on the out-of-time validation dataset (**118,108 transactions; 4,064 a
 
 ---
 
-## 5. Classification Decision Threshold Analysis
+## 4. Classification Decision Threshold Analysis
 
 Evaluating decision thresholds for **HistGradientBoosting**:
 
@@ -137,38 +76,3 @@ Evaluating decision thresholds for **HistGradientBoosting**:
 
 *Changing the classification decision threshold shifts the operational balance between catching more fraudulent transactions (higher Recall) and reducing false alerts on legitimate customers (higher Precision).*
 
----
-
-## 6. Viva Defense Quick Guide (Q&A)
-
-**Q1: What is the core objective of this project?**  
-*Answer*: To perform a Fraud Detection Analysis on the IEEE-CIS dataset to identify transaction patterns associated with fraud and evaluate how effectively supervised machine learning algorithms detect fraudulent transactions.
-
-**Q2: Why did you use a Left Join for transaction and identity data?**  
-*Answer*: Identity metadata is available for only 24.42% of transactions (144,233 rows). An inner join would drop 75.58% of transactions. A left join preserves all 590,540 transaction records while allowing identity missingness to serve as an explicit feature.
-
-**Q3: Why is standard K-Fold Cross-Validation inappropriate?**  
-*Answer*: Transactions have a natural temporal order (`TransactionDT`). Random K-Fold shuffles future transactions into training sets (look-ahead bias). A time-aware chronological split (80% early train, 20% late validation) simulates operational deployment.
-
-**Q4: Why is Accuracy misleading for imbalanced fraud datasets?**  
-*Answer*: In a dataset with 3.50% fraud, predicting every transaction as legitimate yields **96.56% accuracy** but detects 0% of fraud. PR-AUC, Recall, and Precision are the necessary metrics.
-
-**Q5: What do model-important features represent?**  
-*Answer*: They indicate which variables contributed most strongly to the model's predictions. They indicate statistical association and predictive utility, not direct causes of fraud.
-
----
-
-## 7. How to Run the Project
-
-### Environment Setup
-```bash
-git clone <repo_url>
-cd fraud_detection_analysis
-pip install -r requirements.txt
-```
-
-### Execution
-Run the notebooks in order:
-1. `jupyter notebook notebooks/01_data_and_fraud_analysis.ipynb`
-2. `jupyter notebook notebooks/02_preprocessing_and_features.ipynb`
-3. `jupyter notebook notebooks/03_modeling_and_evaluation.ipynb`
